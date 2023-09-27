@@ -1,0 +1,211 @@
+﻿@{
+    Layout = "_LayoutMessage";
+}
+@model PlayMusicProjectMode
+<title>MessageHome</title>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card chat-app">
+                <form action="/Message/MessageHome" method="Get" id="submitFormPeople-list">
+                    <div style="overflow-y:auto; height:550px" id="plist" class="people-list">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="input-group-text" onclick="clickSearchBtn()"><i class="fa fa-search"></i></button>
+                            </div>
+                            <input name="searchSDTUser" type="text" class="form-control" placeholder="Search...">
+                        </div>
+                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                            @{
+                                int countList = 0;
+                                foreach (var item in Model.User)
+                                {
+                                    @if (item.IsMyFriendUser == true)
+                                    {
+                                        <li class="clearfix">
+                                            <a style="color:black" href="/Message/MessageHome?id=@item.IdUser">
+                                                <img style="width:45px;height:45px" src="~/images/imageUser/@item.UserImage" alt="avatar">
+                                                <div class="about">
+                                                    <div class="name">
+                                                        @item.UserName
+                                                    </div>
+                                                    <div class="status"> <i class="fa fa-circle online"></i> Online </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="clearfix">
+                                            <a style="color:black" href="/Message/MessageHome?id=@item.IdUser">
+                                                <img style="width:45px;height:45px" src="~/images/imageUser/@item.UserImage" alt="avatar">
+                                                <div class="about">
+                                                    <div class="name">
+                                                        @item.UserName
+                                                        <div style="height: 15px;text-align: end;width: 150%;">
+                                                            <i class="fa-solid fa-message"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="status"> <i class="fa fa-circle offline"></i> Người lạ </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    countList++;
+                                }
+                            }
+                        </ul>
+                    </div>
+                </form>
+
+                <div class="chat">
+                    <div class="chat-header clearfix">
+                        <div class="row">
+                            @{
+                                foreach (var item in Model.MessageBoxIdUserReceive)
+                                {
+                                    <input id="IdUserReceive" type="number" value="@item.IdUserReceive" class="form-control" hidden>
+                                    <div class="col-lg-6">
+                                        <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                            <img style="width:45px;height:45px" src="~/images/imageUser/@item.UserImage" alt="avatar">
+                                            <input type="text" id="textImageUserReceive" value="@item.UserImage" hidden>
+                                        </a>
+                                        <div class="chat-about">
+                                            <h6 class="m-b-0">@item.UserName</h6>
+                                            @if (item.IsMyFriendUser == true)
+                                            {
+                                                <div class="status"> <i class="fa fa-circle online"></i> Online </div>
+                                            }
+                                            else
+                                            {
+                                                //<small>Last seen: 2 hours ago</small>
+                                                <div class="status"> <i class="fa fa-circle offline"></i> Người lạ </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 hidden-sm text-right">
+                                        @if (item.IsMyFriendUser == true)
+                                        {
+                                            <a title="" href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa-solid fa-user-check"></i></a>
+                                            <a title="Xóa bạn" href="/Message/DeleteMyFriend?id=@item.IdMyFriendUser" class="btn btn-outline-danger"><i class="fa-solid fa-user-minus"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a title="Thêm bạn" href="/Message/AddMyFriend?id=@item.IdMyFriendUser" class="btn btn-outline-primary"><i class="fa-solid fa-user-plus"></i></a>
+                                        }
+                                        <a title="Xóa tin nhắn" href="/Message/DeleteMessageUser?id=@item.IdUserReceive" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                                        <a title="Back To Home" href="/Home/Index" class="btn btn-outline-warning"><i class=" fa-solid fa-house"></i></a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    @{
+                        if (Model.MessageBoxIdUserReceive.Count() >= 1)
+                        {
+                            <div style="overflow-y:auto; height:550px" class="chat-history">
+                                <ul class="m-b-0 getListChatMesage" id="loadBoxMess">
+                                </ul>
+                            </div>
+                            <div class="chat-message clearfix">
+                                <div class="input-group mb-0">
+                                    <div onclick="SendMessage()" class="input-group-prepend">
+                                        <span class="input-group-text sendBtn"><i class="fa fa-send"></i></span>
+                                    </div>
+                                    <input name="textMasage" id="textMasage" type="text" class="form-control" placeholder="Enter text here...">
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section ScriptsMessage{
+    <script>
+        function clickSearchBtn() {
+            //$("input[name='categoryIdItem']").val(0);
+            //$("input[name='idBrands']").val(0);
+            $("#submitFormPeople-list").submit();
+        }
+        function clickUserReceive() {
+            //$("input[name='categoryIdItem']").val(0);
+            //$("input[name='idBrands']").val(0);
+            window.location.href = '/Message/Test?id=' + id;
+            $("#submitFormPeople-list").submit();
+        }
+
+        function SendMessage() {
+            let obj = {
+                IdUserReceive: $('#IdUserReceive').val(),
+                TextChatMessage: $('#textMasage').val()
+            }
+            $.ajax({
+                url: "/Message/SendMessage",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                },
+                success: function (res) {
+                    $("input[name='textMasage']").val("");
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Update mới thất bại...");
+                }
+            })
+        }
+        let idSeverrd = document.getElementById("IdUserReceive").value;
+        let textImageUserReceive = document.getElementById("textImageUserReceive").value;
+        
+        setInterval(function () {
+            $.ajax({
+                url: "/Message/GetListChatMessage",
+                type: "GET",
+                contentType: "application/json",
+                beforeSend: function (res) {
+                },
+                success: function (res) {
+                    if (res && res.length > 0) {
+                        $('.getListChatMesage').html('');
+                        for (let i = 0; i < res.length; i++) {
+                            let message = res[i];
+                            if (message.idUser == message.idUserSend && message.idUserReceive == idSeverrd) {
+                                let html = `
+                                                <li class="clearfix">
+                                                    <div class="message-data text-right">
+                                                         <span class="message-data-time">${message.timeChatMessage}</span>
+                                                    </div>
+                                                     <div class="message other-message float-right"> ${message.textChatMessage} </div>
+                                                 </li>
+                                                        `;
+                                $('.getListChatMesage').append(html);
+                            } else if (message.idUser == message.idUserReceive && message.idUserSend == idSeverrd) {
+                                let html = `
+                                                <li class="clearfix">
+                                                    <div class="message-data">
+                                                         <img  style="width:40px; height:40px" src="/images/imageUser/${textImageUserReceive}" alt="avatar">
+                                                         <span class="message-data-time">${message.timeChatMessage}</span>
+                                                    </div>
+                                                    <div class="message my-message">${message.textChatMessage}</div>
+                                                </li>
+                                                            `;
+                                $('.getListChatMesage').append(html);
+                            }
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log("Loi");
+                }
+            })
+
+
+        }, 2000);
+
+    </script>
+}

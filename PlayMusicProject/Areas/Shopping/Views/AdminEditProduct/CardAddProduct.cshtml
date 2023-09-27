@@ -1,0 +1,127 @@
+﻿@using PlayMusicProject.Models;
+@{
+    Layout = "_LayoutShopEditProduct";
+}
+@model List<AddCart>
+<title>CardAddProduct</title>
+<form action="/AdminEditProduct/CardAddProduct" method="Get" id="submitForm">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Add Card Table</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Imgae
+                                </th>
+                                <th>
+                                    IdCard
+                                </th>
+                                <th>
+                                    IdUser
+                                </th>
+                                <th>
+                                    NameUser
+                                </th>
+                                <th>
+                                    CountAddCart
+                                </th>
+                                <th>
+                                    IdProductShop
+                                </th>
+                                <th>
+                                    SumPrice
+                                </th>
+                                <th>
+                                    Hành Động
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                            //int count = (Model.PageNumber * Model.PageSize - Model.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                            <tr>
+                            <td class="py-1">
+                                <img src="~/shopping/images/product/@item.ImageProductShop" alt="image" />
+                            </td>
+                            <td>
+                                @item.IdAddCart
+                            </td>
+                            <td>
+                            @item.IdUser
+                            </td>
+                            <td>
+                            @item.NameUser
+                            </td>
+                            <td>
+                            @item.CountAddCart
+                            </td>
+                            <td>
+                            @item.IdProductShop
+                            </td>
+                            <td>
+                            @item.SumPrice
+                            </td>
+                            <td>
+                                  <a href="/Shopping/Shopping/DeleteCardAdminUser?id=@item.IdAddCart" type="button" class="btn btn-danger btn-rounded btn-icon">
+                            <i>Xóa</i>
+                            </a>
+                            </td>
+                            </tr>
+                            }
+                            }
+                        </tbody>
+                    </table>
+                    <div class="d-flex" style="margin-top:20px">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                @*@{
+                                if (Model.PageNumber > 1)
+                                {
+                                <li class="page-item" onclick="clickPage(@Model.PageNumber - 1)">
+                                <a class="page-link" href="#">Previous</a>
+                                </li>
+                                }
+
+                                for (int i = 1; i <= Model.PageCount; i++)
+                                {
+                                if (i == Model.PageNumber)
+                                {
+                                <li class="page-item active" onclick="clickPage(@i)">
+                                <a class="page-link" href="#">@i</a>
+                                </li>
+                                }
+                                else
+                                {
+                                <li class="page-item" onclick="clickPage(@i)">
+                                <a class="page-link" href="#">@i</a>
+                                </li>
+                                }
+                                }
+                                if (Model.PageNumber < Model.PageCount)
+                                {
+                                <li class="page-item" onclick="clickPage(@Model.PageNumber + 1)">
+                                <a class="page-link" href="#">Next</a>
+                                </li>
+                                }
+                                }*@
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<input type="number" name="pageNumber" value="@Model.PageNumber" hidden="hidden" />*@
+</form>
+<!-- content-wrapper ends -->
+@section AdminEditProductScrips
+{
+    <script>
+
+    </script>
+}

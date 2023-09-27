@@ -1,0 +1,186 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+	Layout = "_LayoutShopProduct";
+}
+<style>
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+</style>
+<title>Shopping</title>
+<form role="form" method="POST" action="/Shopping/Shopping/EditCartAdd">
+	<section id="cart_items">
+		<div class="container">
+			<div class="breadcrumbs">
+				<ol class="breadcrumb">
+					<li><a href="/Shopping/Shopping/ProductShop">Home</a></li>
+					<li class="active">Shopping Cart</li>
+				</ol>
+			</div>
+			<div class="table-responsive cart_info">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="cart_menu">
+							<td class="image">Item</td>
+							<td class="description"></td>
+							<td class="price">Price</td>
+							<td class="quantity">Quantity</td>
+							<td class="total">Total</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (var item in Model.AddCart)
+							{
+								<tr>
+									<td class="cart_product">
+										<a href=""><img style="width:110px; height:110px" src="~/shopping/images/product/@item.ImageProductShop" alt=""></a>
+									</td>
+									<td class="cart_description">
+										<h4><a href="">Colorblock Scuba</a></h4>
+										<p>ID: @item.IdAddCart</p>
+										<input type="number" id="IdAddCart" value="@item.IdAddCart" hidden>
+									</td>
+									<td class="cart_price">
+										<p>$@item.PriceProductShop</p>
+										<input type="number" id="PriceProductShop" value="@item.PriceProductShop" hidden>
+									</td>
+									<td class="cart_quantity">
+										<div class="cart_quantity_button">
+											<a style="cursor:pointer" class="cart_quantity_up" onclick="UpdateCardUser(@item.IdAddCart,1)"> + </a>
+											<input class="cart_quantity_input check" name="@item.IdAddCart" id="@item.IdAddCart" type="number" onchange="changeEditCard(@item.IdAddCart)" value="@item.CountAddCart" autocomplete="off" size="2">
+											<a style="cursor:pointer" class="cart_quantity_down" onclick="UpdateCardUser(@item.IdAddCart,-1)"> - </a>
+										</div>
+									</td>
+									<td class="cart_total">
+										<p class="cart_total_price">$@item.SumPrice</p>
+									</td>
+									<td class="cart_delete">
+										<a href="/Shopping/Shopping/DeleteCardUser?id=@item.IdAddCart" class="cart_quantity_delete"><i class="fa fa-times"></i></a>
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+				
+				@if (Model.AddCart.Count == 0)
+				{
+					<h4 class="title text-center">Chưa có gì trong giỏ hàng hãy mua <a href="/Shopping/Shopping/ProductShop">tại đây...</a></h4>
+				}
+				<p>@ViewBag.Alotest</p>
+			</div>
+		</div>
+	</section> <!--/#cart_items-->
+
+	<section id="do_action">
+		<div class="container">
+			<div class="heading">
+				<h3>What would you like to do next?</h3>
+				<p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
+			</div>
+			<div class="row" style="align-items:center">
+				<div class="col-sm-12">
+					<div class="total_area">
+						<ul>
+							<li>Total products in the cart <span>@ViewBag.TongSlProduct</span></li>
+							<li>Shipping Cost <span>Free</span></li>
+							<li>Total amount in cart <span>$@ViewBag.TongTotal</span></li>
+							<li style="background-color:white">
+								<input style="width:100%; height:50px" type="text" placeholder="Enter Address" />
+							</li>
+						</ul>
+						<a class="btn btn-default check_out" href="">Pay</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section><!--/#do_action-->
+</form>
+
+@section ShopProductScrips
+{
+	<script>
+
+		function changeEditCard(xId){
+			var count = document.getElementById(`${xId}`).value;
+			let countConver = parseInt(count);
+			if (countConver <= 0){
+				countConver = 1;
+			}
+				let obj = {
+					IdAddCart: xId,
+					CountAddCart: countConver,
+					PriceProductShop: $('#PriceProductShop').val(),
+				}
+				$.ajax({
+					url: "/Shopping/Shopping/EditCartAdd",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(obj),
+					beforeSend: function () {
+						console.log("Before");
+						console.log(obj);
+					},
+					success: function (res) {
+						if (res > 0) {
+							window.location.href = '/Shopping/Shopping/Cart';
+						} else {
+							alert("Update thất bại...");
+						}
+					},
+					error: function (error) {
+						console.log("Lỗi");
+						console.log(error);
+						alert("Update mới thất bại...");
+					}
+				})
+			
+		}
+
+
+		function UpdateCardUser(xId,tangGiam) {
+			var count = document.getElementById(`${xId}`).value;
+			let countConver = parseInt(count);
+			let countEdit = countConver + tangGiam;
+			if (countEdit > 0) {
+				console.log(xId, countConver, countEdit)
+				let obj = {
+					IdAddCart: xId,
+					CountAddCart: countEdit,
+					PriceProductShop: $('#PriceProductShop').val(),
+				}
+				$.ajax({
+					url: "/Shopping/Shopping/EditCartAdd",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(obj),
+					beforeSend: function () {
+						console.log("Before");
+						console.log(obj);
+					},
+					success: function (res) {
+						if (res > 0) {
+							window.location.href = '/Shopping/Shopping/Cart';
+						} else {
+							alert("Update thất bại...");
+						}
+					},
+					error: function (error) {
+						console.log("Lỗi");
+						console.log(error);
+						alert("Update mới thất bại...");
+					}
+				})
+			}
+		}
+	</script>
+}

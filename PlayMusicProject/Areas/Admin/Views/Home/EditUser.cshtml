@@ -1,0 +1,146 @@
+﻿@using PlayMusicProject.Models;
+@model List<User>
+@{
+    Layout = "_LayoutAdmin";
+}
+<title>Edit User</title>
+<div class="container">
+
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit User</h3>
+        </div>
+        <div class="panel-body">
+
+            <form role="form" method="POST" action="/Admin/Home/EditUserItem">
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Id User</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model[0].IdUser" readonly id="IdUser" placeholder="Id">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Name User</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model[0].UserName" id="UserName" placeholder="Name User">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Acount</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control"  readonly value="@Model[0].AccountUser" id="AccountUser" placeholder="Acount">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Pass</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control"  value="@Model[0].AccountPass" id="AccountPass" placeholder="Pass">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IsAdmin</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model[0].IsAdmin.ToString()" id="IsAdmin" placeholder="IsAdmin">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IsBan</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model[0].IsBan.ToString()" id="IsBan" placeholder="IsBan">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Image</label>
+                    <div class="form-group">
+                        <label for="image">Chọn file</label>
+                        <input type="file" id="imageUpload">
+                        <input type="text" id="UserImage" value="@Model[0].UserImage" readonly />
+                    </div>
+                    <div id="imageNewFay">
+                        <img style="width: 60px" src="~/images/imageUser/@Model[0].UserImage" />
+                    </div>
+                </div> <!-- form-group // -->
+                <hr>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" onclick="UpdateUser()" class="btn btn-primary">Edit</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+</div> <!-- container// -->
+@section AdminScrips
+    {
+    <script>
+        $('#imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UploadImageUser',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="UserImage"]').val(res.fileName);
+                    $('#imageNewFay').html('');
+                    let srcImage = res.fileName;
+                    let html = `
+                                 <img style="width: 60px" src="/images/imageUser/${srcImage}" />
+                            `;
+                    $('#imageNewFay').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+        function UpdateUser() {
+
+            let obj = {
+                IdUser: $('#IdUser').val(),
+                UserName: $('#UserName').val(),
+                AccountUser: $('#AccountUser').val(),
+                AccountPass: $('#AccountPass').val(),
+                IsAdminString: $('#IsAdmin').val(),
+                IsBanString: $('#IsBan').val(),
+                UserImage: $('#UserImage').val()
+            }
+            $.ajax({
+                url: "/Admin/Home/EditUserItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+                    if (res > 0) {
+                        alert("Update thành công !");
+                        window.location.href = '/Admin/Home/EditUser?id=' + id;
+                    } else {
+                        alert("Update thất bại...");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Update mới thất bại...");
+                }
+            })
+        }
+
+    </script>
+}

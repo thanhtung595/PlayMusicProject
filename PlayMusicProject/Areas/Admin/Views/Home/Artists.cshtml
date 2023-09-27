@@ -1,0 +1,132 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+    Layout = "_LayoutAdmin";
+}
+<title>Artists Home </title>
+<form action="/admin/Home/Artists" method="Get" id="submitForm">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Artists Table</h4>
+                <a href="#" type="button" class="btn btn-primary btn-rounded btn-fw">New Artists</a>
+
+                <div class="input-group rounded mt-4">
+                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <button type="submit" style="width:70px">
+                        <i class="mdi mdi-account-search"></i>
+                    </button>
+                </div>
+                <div class="navbar navbar-light bg-light mt-3">
+                    <div class="form-inline align-items-center">
+                        <select>
+                            <option value="0">Sắp xếp theo</option>
+                            <option value="1">Theo Id</option>
+                            <option value="2">Theo AccountUser</option>
+                            <option value="3">Theo UserName</option>
+                            <option value="4">Theo IsAdmin</option>
+                            <option value="5">Theo IsBan</option>
+                        </select>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Imgae
+                                </th>
+                                <th>
+                                    IdArtists
+                                </th>
+                                <th>
+                                    NameArtists
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = (Model.PageNumber * Model.PageSize - Model.PageSize) + 1;
+                                foreach (var item in Model.Artists)
+                                {
+                                    <tr>
+                                        <td class="py-1">
+                                            <img src="~/images/artist/@item.ImageArtists" alt="image" />
+                                        </td>
+                                        <td>
+                                            @item.IdArtists
+                                        </td>
+                                        <td>
+                                            @item.NameArtists
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <div class="d-flex" style="margin-top:20px">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                @{
+                                    if (Model.PageNumber > 1)
+                                    {
+                                        <li class="page-item" onclick="clickPage(@Model.PageNumber - 1)">
+                                            <a class="page-link" href="#">Previous</a>
+                                        </li>
+                                    }
+
+                                    for (int i = 1; i <= Model.PageCount; i++)
+                                    {
+                                        if (i == Model.PageNumber)
+                                        {
+                                            <li class="page-item active" onclick="clickPage(@i)">
+                                                <a class="page-link" href="#">@i</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item" onclick="clickPage(@i)">
+                                                <a class="page-link" href="#">@i</a>
+                                            </li>
+                                        }
+                                    }
+                                    if (Model.PageNumber < Model.PageCount)
+                                    {
+                                        <li class="page-item" onclick="clickPage(@Model.PageNumber + 1)">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="number" name="pageNumber" value="@Model.PageNumber" hidden="hidden" />
+</form>
+<!-- content-wrapper ends -->
+@section AdminScrips
+    {
+    <script>
+        $('#pageSize').val(@Model.PageSize)
+        function clickPage(pageNumber) {
+            $("input[name='pageNumber']").val(pageNumber);
+            $("#submitForm").submit();
+        }
+
+        $("select[name='pageSize']").change(function () {
+            $("input[name='pageNumber']").val(1);
+            $("#submitForm").submit();
+        })
+
+        function deleteUser(id) {
+            var check = confirm("Bạn có chắc xóa user không");
+            if (check) {
+                window.location.href = '/Admin/Home/DeleteUser?id=' + id;
+            }
+        }
+    </script>
+}

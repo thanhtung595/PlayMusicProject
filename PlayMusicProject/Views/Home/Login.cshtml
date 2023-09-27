@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    string errorMessage = (string)TempData["erorMessage"];
+    string successMessage = (string)TempData["RegisterSuccess"];
+}
+<div class="fixDialogLogin" style="height:800px">
+    <form method="POST" action="/Home/Login">
+            <div class="modal-dialog login_dialog">
+                <div class="modal-content">
+                <a href="/Home/index">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa_icon form_close"></i>
+                    </button>
+                </a>
+                    <div class="modal-body">
+                        <div class="ms_register_img">
+                            <img src="~/images/register_img.png" alt="" class="img-fluid" />
+                        </div>
+                        <div class="ms_register_form">
+                            <h2>login / Sign in</h2>
+                            <div>
+                                @if (!string.IsNullOrEmpty(successMessage))
+                                {
+                                    <p class="m-5">@successMessage</p>
+                                    <br>
+                                }
+                            </div>    
+                            <div class="form-group">
+                                <input type="text" name="AccountUser" placeholder="Enter Your Email Or UserName" class="form-control">
+                                <span class="form_icon">
+                                    <i class="fa_icon form-envelope" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="AccountPass" placeholder="Enter Password" class="form-control">
+                                <span class="form_icon">
+                                    <i class="fa_icon form-lock" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <div class="remember_checkbox">
+                            <label>
+                                    Keep me signed in
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <p>Lỗi: @errorMessage</p>
+                            }
+                            <div style="text-align:center;margin:20px">
+                                <button style="display: contents" type="submit" class="ms_btn" target="_blank">login now</button>
+                            </div>
+                            </div>
+                            <div class="popup_forgot">
+                                <a href="#">Forgot Password ?</a>
+                            </div>
+                            <p>Don't Have An Account? <a href="/Home/Register_Here" class="ms_modal1 hideCurrentModel">register here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>

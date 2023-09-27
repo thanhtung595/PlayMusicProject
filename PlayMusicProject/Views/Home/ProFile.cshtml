@@ -1,0 +1,138 @@
+﻿@model List<User>
+<link href="~/css/profile.css" rel="stylesheet" />
+
+<div style="padding:10px; ">
+    <div class="container rounded bg-white mt-5 mb-5" style="padding:20px; ">
+        <form class="row" role="form" method="POST" action="/Home/EditUserItem">
+            
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <div class="image-new">
+                        <input class="imageUpload" type="file"
+                               id="avatar"
+                               name="avatar"
+                               hidden
+                               onchange="preview.src=window.URL.createObjectURL(this.files[0])" />
+                        <label for="avatar">
+                            <img class="avatar-preview rounded-circle mt-5" width="150px" id="preview"
+                                 src="~/images/imageUser/@Model[0].UserImage"
+                                 alt="" />
+                        </label>
+                    </div>
+                    <span style="margin-top:10px" class="font-weight-bold">@Model[0].UserName</span><span class="text-black-50">@Model[0].AccountUser</span><span> </span></div>
+            </div>
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Id User</label><input type="text" class="form-control" readonly placeholder="enter phone number" value="@Model[0].IdUser"></div>
+                        <div class="col-md-12"><label class="labels">User Name</label><input type="text" class="form-control" readonly placeholder="enter phone number" value="@Model[0].UserName"></div>
+                        <div class="col-md-12"><label class="labels">AccountUser</label><input id="AccountUser" type="text" class="form-control" readonly placeholder="enter phone number" value="@Model[0].AccountUser"></div>
+                        <div class="col-md-12"><label class="labels">AccountPass</label><input type="password" class="form-control" readonly placeholder="enter phone number" value="@Model[0].AccountPass"></div>
+                        <div class="col-md-12"><label class="labels">IsAdmin</label><input type="text" class="form-control" readonly value="@Model[0].IsAdmin.ToString()" id="IsAdmin" placeholder="IsBan"></div>
+                        <div class="col-md-12"><label class="labels">IsBan</label><input type="text" class="form-control" readonly value="@Model[0].IsBan.ToString()" id="IsBan" placeholder="IsBan"></div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center experience"><span>Edit User</span><span class="border px-3 p-1 add-experience"><button type="button" onclick="UpdateUser()" class="fa fa-plus">&nbsp;Submit</button></span></div><br>
+                </div>
+                <div class="p-3 py-5">
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Id User</label><input id="IdUser" type="text" class="form-control" readonly placeholder="enter phone number" value="@Model[0].IdUser"></div>
+                        <div class="col-md-12"><label class="labels">User Name</label><input id="UserName" type="text" class="form-control" placeholder="enter phone number" value="@Model[0].UserName"></div>
+                        <div class="col-md-12"><label class="labels">AccountUser</label><input id="" type="text" class="form-control" readonly placeholder="enter phone number" value="@Model[0].AccountUser"></div>
+                        <div class="col-md-12 panel panel-default">
+                                        <div class="panel-body">
+                                          <div class="form-group">
+                                        <label class="labels">AccountPass</label>
+                                    <input id="AccountPass" type="password" class="form-control" name="password" value="@Model[0].AccountPass">
+                                    <span toggle="#AccountPass" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                     </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                    <input type="text" id="UserImage" hidden value="@Model[0].UserImage" readonly />
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(".toggle-password").click(function () {
+
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+
+        $('.imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/home/EditImageProFile',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="UserImage"]').val(res.fileName);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+        function UpdateUser() {
+
+            console.log()
+            let obj = {
+                IdUser: $('#IdUser').val(),
+                UserName: $('#UserName').val(),
+                AccountUser: $('#AccountUser').val(),
+                AccountPass: $('#AccountPass').val(),
+                IsAdminString: $('#IsAdmin').val(),
+                IsBanString: $('#IsBan').val(),
+                UserImage: $('#UserImage').val()
+            }
+            $.ajax({
+                url: "/Home/EditUserItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+                    if (res > 0) {
+                        alert("Update thành công !");
+                        window.location.href = '/Home/ProFile';
+                    } else {
+                        alert("Update thất bại...");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Update mới thất bại...");
+                }
+            })
+        }
+    </script>
+}

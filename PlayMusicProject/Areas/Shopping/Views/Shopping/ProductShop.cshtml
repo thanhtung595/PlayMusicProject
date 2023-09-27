@@ -1,0 +1,332 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+	Layout = "_LayoutShopProduct";
+}
+<title>Shopping</title>
+<form action="/Shopping/Shopping/ProductShop" method="Get" id="submitForm">
+	<div class="header-bottom">
+		<!--header-bottom-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="mainmenu pull-left">
+						<ul class="nav navbar-nav collapse navbar-collapse">
+							<li><a href="/Home/index">Back To Music Home</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="input-group" style="display:flex">
+						<input type="search" class="form-control rounded" value="@ViewBag.ValueSeachName" name="seachName" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+						<button type="button" onclick="searchNameProduct()" class="btn btn-outline-primary">Search</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!--/header-bottom-->
+	<section id="slider">
+		<!--slider-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="slider-carousel" class="carousel slide" data-ride="carousel">
+						<ol class="carousel-indicators">
+							<li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+							<li data-target="#slider-carousel" data-slide-to="1"></li>
+							<li data-target="#slider-carousel" data-slide-to="2"></li>
+						</ol>
+						<div class="carousel-inner">
+							<div class="item active">
+								<div class="col-sm-6">
+									<h1><span>Music</span>-SHOPPER</h1>
+									<h2>Music Accessories Shop</h2>
+								<p>
+									Prestigious music accessories store with quality. Come to me for the best quality products.
+								</p>
+									<button type="button" class="btn btn-default get">Get it now</button>
+								</div>
+								<div class="col-sm-6">
+									<img src="~/shoppingProduct/images/baner/baner1.jpg" class="girl img-responsive" alt="" />
+									<img src="~/shoppingProduct/images/home/pricing.png" class="pricing" alt="" />
+								</div>
+							</div>
+							<div class="item">
+								<div class="col-sm-6">
+									<h1><span>Music</span>-SHOPPER</h1>
+									<h2>Music Accessories Shop</h2>
+									<p>
+										Prestigious music accessories store with quality. Come to me for the best quality products.
+									</p>
+									<button type="button" class="btn btn-default get">Get it now</button>
+								</div>
+								<div class="col-sm-6">
+									<img src="~/shoppingProduct/images/baner/baner2.jpg" class="girl img-responsive" alt="" />
+									<img src="~/shoppingProduct/images/home/pricing.png" class="pricing" alt="" />
+								</div>
+							</div>
+
+							<div class="item">
+								<div class="col-sm-6">
+									<h1><span>Music</span>-SHOPPER</h1>
+									<h2>Music Accessories Shop</h2>
+									<p>
+										Prestigious music accessories store with quality. Come to me for the best quality products.
+									</p>
+									<button type="button" class="btn btn-default get">Get it now</button>
+								</div>
+								<div class="col-sm-6">
+								<img src="~/shoppingProduct/images/baner/baner3.jpg" class="girl img-responsive" alt="" />
+									<img src="~/shoppingProduct/images/home/pricing.png" class="pricing" alt="" />
+								</div>
+							</div>
+
+						</div>
+
+						<a href="~/shoppingProduct/#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+							<i class="fa fa-angle-left"></i>
+						</a>
+						<a href="~/shoppingProduct/#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+							<i class="fa fa-angle-right"></i>
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section><!--/slider-->
+
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="left-sidebar">
+						<h2>Category</h2>
+						<div class="panel-group category-products" id="accordian">
+							<!--category-productsr-->
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordian" href="~/shoppingProduct/#sportswear">
+											<span class="badge pull-right"><i class="fa fa-plus"></i></span>
+											@Model.CategoryShop[0].NameCategoryShop
+										</a>
+									</h4>
+								</div>
+								<div id="sportswear" class="panel-collapse collapse">
+									<div class="panel-body">
+										<ul>
+											@foreach (var item in @Model.ItemCategoryShop)
+											{
+												@if (item.IdCategoryShop == 1)
+												{
+													<li style="margin-top:5px; cursor:pointer" onclick="clickCategory(@item.IdItemCategoryShop)">@item.NameItemCategoryShop</li>
+												}
+											}
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordian" href="~/shoppingProduct/#mens">
+											<span class="badge pull-right"><i class="fa fa-plus"></i></span>
+											@Model.CategoryShop[1].NameCategoryShop
+										</a>
+									</h4>
+								</div>
+								<div id="mens" class="panel-collapse collapse">
+									<div class="panel-body">
+										<ul>
+											@foreach (var item in @Model.ItemCategoryShop)
+											{
+												@if (item.IdCategoryShop == 2)
+												{
+													<li style="margin-top:5px; cursor:pointer" onclick="clickCategory(@item.IdItemCategoryShop)">@item.NameItemCategoryShop</li>
+												}
+											}
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordian" href="~/shoppingProduct/#womens">
+											<span class="badge pull-right"><i class="fa fa-plus"></i></span>
+											@Model.CategoryShop[2].NameCategoryShop
+										</a>
+									</h4>
+								</div>
+								<div id="womens" class="panel-collapse collapse">
+									<div class="panel-body">
+										<ul>
+											@foreach (var item in @Model.ItemCategoryShop)
+											{
+												@if (item.IdCategoryShop == 3)
+												{
+													<li style="margin-top:5px; cursor:pointer" onclick="clickCategory(@item.IdItemCategoryShop)">@item.NameItemCategoryShop</li>
+												}
+										}
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div><!--/category-products-->
+
+						<div class="brands_products">
+							<!--brands_products-->
+							<h2>Brands</h2>
+							<div class="brands-name">
+								<ul class="nav nav-pills nav-stacked">
+									@foreach (var item in Model.BrandShop)
+									{
+										<li style="font-size:17px; margin-bottom:5px;cursor:pointer" onclick="clickBrands(@item.IdBrandShop)"><span class="pull-right"></span>@item.NameBrandShop</li>
+									}
+								</ul>
+							</div>
+						</div><!--/brands_products-->
+
+					</div>
+				</div>
+
+				<div class="col-sm-9 padding-right">
+					<div class="features_items">
+						<!--features_items-->
+						<h2 class="title text-center">Features Items</h2>
+						<h4 class="title text-center">@ViewBag.MesseNullCount</h4>
+						@if(Model.TotalCount == 0)
+						{
+							<div class="text-center">
+								<button onclick="restCategoryIdItem()" type="button">Show All</button>
+							</div>
+						}
+						@{
+							foreach (var item in Model.ProductShop)
+							{
+								<div class="col-sm-4" style="width:287px; height:432px">
+									<div class="product-image-wrapper">
+										<div class="single-products">
+											<div class="productinfo text-center">
+												<img style="width:255px; height:255px" src="~/shopping/images/product/@item.ImageProductShop" alt="" />
+												<h2>$@item.PriceProductShop</h2>
+												<p>@item.NameProductShop</p>
+												<a href="/Shopping/Shopping/Cart?id=@item.IdProductShop" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											</div>
+											<div class="product-overlay">
+												<div class="overlay-content">
+													<h2>$@item.PriceProductShop</h2>
+													<p>@item.NameProductShop</p>
+													<a href="/Shopping/Shopping/Cart?id=@item.IdProductShop" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+												</div>
+											</div>
+											@if(item.NewProductShop == true)
+											{
+												<img src="~/shopping/images/new.png" class="new" alt="" />
+											}
+										</div>
+									</div>
+								</div>
+							}
+						}
+						<div class="d-flex" style="margin-top:20px">
+							<nav aria-label="Page navigation example">
+								<ul class="pagination" style="width:100%; align-items:center">
+									@{
+										if (Model.PageNumber > 1)
+										{
+											<li class="page-item" onclick="clickPage(@Model.PageNumber - 1)">
+												<a class="page-link" href="#">Previous</a>
+											</li>
+										}
+
+										for (int i = 1; i <= Model.PageCount; i++)
+										{
+											if (i == Model.PageNumber)
+											{
+												<li class="page-item active" onclick="clickPage(@i)">
+													<a class="page-link" href="#">@i</a>
+												</li>
+											}
+											else
+											{
+												<li class="page-item" onclick="clickPage(@i)">
+													<a class="page-link" href="#">@i</a>
+												</li>
+											}
+										}
+										if (Model.PageNumber < Model.PageCount)
+										{
+											<li class="page-item" onclick="clickPage(@Model.PageNumber + 1)">
+												<a class="page-link" href="#">Next</a>
+											</li>
+										}
+									}
+								</ul>
+							</nav>
+						</div>
+						<input type="number" name="idBrands" hidden="hidden" />
+						<input type="number" name="categoryIdItem" hidden="hidden" />
+						<input type="number" name="pageNumber" value="@Model.PageNumber" hidden="hidden" />
+					</div><!--features_items-->
+				</div>
+			</div>
+		</div>
+	</section>
+</form>
+
+@section ShopProductScrips
+{
+    <script>
+        $('#pageSize').val(@Model.PageSize)
+        function clickPage(pageNumber) {
+			$("input[name='pageNumber']").val(pageNumber);
+            $("#submitForm").submit();
+        }
+
+		function clickCategory(categoryId) {
+			$("input[name='categoryIdItem']").val(categoryId);
+			$("input[name='pageNumber']").val(1);
+			$("input[name='idBrands']").val(0);
+			$("#submitForm").submit();
+		}
+
+		function restCategoryIdItem() {
+			$("input[name='categoryIdItem']").val(0);
+			$("input[name='idBrands']").val(0);
+			$("#submitForm").submit();
+		}
+
+		function searchNameProduct() {
+			$("input[name='pageNumber']").val(1);
+			$("input[name='categoryIdItem']").val(0);
+			$("input[name='idBrands']").val(0);
+			$("#submitForm").submit();
+		}
+
+		function clickBrands(idBrands) {
+			$("input[name='idBrands']").val(idBrands);
+			$("input[name='pageNumber']").val(1);
+			$("input[name='categoryIdItem']").val(0);
+			$("input[name='pageNumber']").val(1);
+			$("#submitForm").submit();
+		}
+
+        $("select[name='pageSize']").change(function () {
+            $("input[name='pageNumber']").val(1);
+            $("#submitForm").submit();
+        })
+    </script>
+}
+

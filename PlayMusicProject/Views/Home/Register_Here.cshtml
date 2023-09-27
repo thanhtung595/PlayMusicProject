@@ -1,0 +1,59 @@
+﻿@{
+    string eresAcont = (string)TempData["eresAcont"];
+}
+<title>Play Music Online</title>
+<div class="fixDialogLogin" style="height:700px">
+    <form method="POST" action="/Home/Index_Register_Here">
+        <!----Login Popup Start---->
+                <div class="modal-dialog register_dialog">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <i class="fa_icon form_close"></i>
+                        </button>
+                        <div class="modal-body">
+                            <div class="ms_register_img">
+                                <img src="~/images/register_img.png" alt="" class="img-fluid" />
+                            </div>
+                            <div class="ms_register_form">
+                                <h2>Register / Sign Up</h2>
+                            <div>
+                            @if (!string.IsNullOrEmpty(eresAcont))
+                                {
+                                <p class="m-5">@eresAcont</p>
+                                    <br>
+                                }
+                            </div>
+                        <div class="form-group">
+                                <input type="text" placeholder="Enter Your Name" name="UserName" class="form-control">
+                                    <span class="form_icon">
+                                        <i class="fa_icon form-user" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                <input type="text" name="AccountUser" placeholder="Enter Email Or UserName" class="form-control">
+                                    <span class="form_icon">
+                                        <i class="fa_icon form-envelope" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                <input type="password" name="AccountPass" placeholder="Enter Password" class="form-control">
+                                    <span class="form_icon">
+                                        <i class="fa_icon form-lock" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                <input type="password" name="AccountPassConfirm" placeholder="Confirm Password" class="form-control">
+                                    <span class="form_icon">
+                                        <i class=" fa_icon form-lock" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div style="text-align:center;margin:20px">
+                                <button style="display: contents" type="submit" class="ms_btn" target="_blank">register now</button>
+                                </div>
+                                <p>Already Have An Account? <a href="/Home/Login" class="ms_modal hideCurrentModel">login here</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </form>
+</div>

@@ -1,0 +1,214 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+    Layout = "_LayoutAdmin";
+}
+<title>Edit Music</title>
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit Music</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST" action="/Admin/Home/EditMusicItem">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IdMusic</label>
+                    <div class="col-sm-9">
+                        <input type="number" value="@Model.Music[0].IdMusic" readonly class="form-control" id="IdMusic" placeholder="NameMusic">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">NameMusic</label>
+                    <div class="col-sm-9">
+                        <input type="text" value="@Model.Music[0].NameMusic" class="form-control" id="NameMusic" placeholder="NameMusic">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">DescribeMusic</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Music[0].DescribeMusic" id="DescribeMusic" placeholder="DescribeMusic">
+                    </div>
+                </div> <!-- form-group // -->
+
+                <div class="form-group">
+                    <label for="IdLyricMusic">Id LyricMusic</label>
+@*                    <select class="form-control" id="IdLyricMusic">
+                        <option value="0">Lựa chọn</option>
+                        @foreach (var item in Model.LyricMusic)
+                        {
+                            <option value="@item.IdLyricMusic">@item.IdLyricMusic</option>
+                        }
+                    </select>*@
+                </div>
+
+                <div class="form-group">
+                    <label for="IdCategory">Category</label>
+ @*                   <select class="form-control" id="IdCategory">
+                        <option value="0">Lựa chọn</option>
+                        @foreach (var item in Model.CateGory)
+                        {
+                            <option value="@item.IdCategory">@item.NameCategory</option>
+                        }
+                    </select>*@
+                </div>
+
+                <div class="form-group">
+                    <label for="IdArtists">Artists</label>
+                    <select class="form-control" id="IdArtists">
+                        <option value="0">Lựa chọn</option>
+@*                        @foreach (var item in Model.Artists)
+                        {
+                            <option value="@item.IdArtists">@item.NameArtists</option>
+                        }*@
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Image Music</label>
+                    <div class="form-group">
+                        <label for="image">Chọn file</label>
+                        <input type="file" id="imageUpload">
+                        <input type="text" value="@Model.Music[0].ImageMusic" id="ImageMusic" readonly />
+                    </div>
+                    <div id="imageNewFay">
+                        <img style="width: 60px" src="~/images/ImageMusic/@Model.Music[0].ImageMusic" />
+                    </div>
+                </div> <!-- form-group // -->
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">AudioMusic MP3</label>
+                    <div class="form-group">
+                        <label for="file">Chọn file</label>
+                        <input type="file" id="audioNewUpload">
+                        <input type="text" id="AudioMusic" readonly value="@Model.Music[0].AudioMusic" />
+                    </div>
+                    <div id="audioNewFay">
+                        <audio class="w-50" id="plyr-audio-player" controls>
+                            <source src="~/audio/@Model.Music[0].AudioMusic" type="audio/mp3" />
+                        </audio>
+                    </div>
+                </div> <!-- form-group // -->
+                <hr>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" onclick="addNewMusic()" class="btn btn-primary">Edit</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+
+</div> <!-- container// -->
+@section AdminScrips
+    {
+    <script>
+        $('#imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UploadImageMusic',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="ImageMusic"]').val(res.fileName);
+                    let srcImage = res.fileName;
+                    $('#imageNewFay').html('');
+                    let html = `
+                                 <img style="width: 60px" src="/images/ImageMusic/${srcImage}" />
+                            `;
+                    $('#imageNewFay').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+        $('#audioNewUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("audioNewUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UploadImageAudio',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="AudioMusic"]').val(res.fileName);
+                    let audioName = res.fileName;
+                    $('#audioNewFay').html('');
+                    let html = `
+                                        <audio class="w-50" id="plyr-audio-player" controls>
+                                               <source src="/audio/${audioName}" type="audio/mp3" />
+                                        </audio>
+                                    `;
+                    $('#audioNewFay').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+        function addNewMusic() {
+            console.log()
+            let obj = {
+                IdMusic: $('#IdMusic').val(),
+                NameMusic: $('#NameMusic').val(),
+                DescribeMusic: $('#DescribeMusic').val(),
+                IdLyricMusic: $('#IdLyricMusic').val(),
+                ImageMusic: $('#ImageMusic').val(),
+                AudioMusic: $('#AudioMusic').val(),
+                IdArtists: $('#IdArtists').val(),
+                IdCategory: $('#IdCategory').val()
+            }
+            $.ajax({
+                url: "/admin/home/EditMusicItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+                    if (res == 2) {
+                        alert("Tên bài hát đã tồn tại !");
+                    }
+                    if (res == 3) {
+                        alert("Audio này đã bị trùng !");
+                    }
+                    if (res == 1) {
+                        alert("Edit thành công !");
+                    } else {
+                        alert("Thêm mới thất bại...");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Edit thất bại...");
+                }
+            })
+        }
+
+    </script>
+}

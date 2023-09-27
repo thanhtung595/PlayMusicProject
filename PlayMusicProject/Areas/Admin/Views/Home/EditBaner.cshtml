@@ -1,0 +1,117 @@
+﻿@using PlayMusicProject.Models;
+@{
+    Layout = "_LayoutEditBaner";
+}
+@model List<Banner>
+
+<!---Banner--->
+<form role="form" method="POST" action="/Admin/Home/EditBanerItem">
+    <div class="ms-banner">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="ms_banner_img">
+                        <img src="~/images/banner/@Model[0].imageBanner" alt="" class="img-fluid">
+                    </div>
+                    <div class="ms_banner_text">
+                        <h1>This Month’s</h1>
+                        <h1 class="ms_color">Record Breaking Albums !</h1>
+                        <p>Dream your moments, Until I Met You, Gimme Some Courage, Dark Alley, One More Of A Stranger, Endless<br> Things, The Heartbeat Stops, Walking Promises, Desired Games and many more...</p>
+                        <div class="ms_banner_btn" style="display:flex">
+                            <a href="/Admin/Home/Index" class="ms_btn">Back To Home Admin</a>
+                            <input class="ms_btn" type="file" id="imageUpload">
+                            <button class="ms_btn" onclick="UpdateBaner()" type="button">Save Baner</button>
+                            <input type="text" id="BanerImage" value="@Model[0].imageBanner" hidden />
+                            <input type="number" id="IdImageBaner" value="@Model[0].idBanner" hidden />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ms-banner">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="ms_banner_img" id="imgageNewBaner">
+                        <img src="~/images/banner/@Model[0].imageBanner" alt="" class="img-fluid">
+                    </div>
+                    <div class="ms_banner_text">
+                        <h1>This Month’s</h1>
+                        <h1 class="ms_color">Record Breaking Albums !</h1>
+                        <p>Dream your moments, Until I Met You, Gimme Some Courage, Dark Alley, One More Of A Stranger, Endless<br> Things, The Heartbeat Stops, Walking Promises, Desired Games and many more...</p>
+                        <div class="ms_banner_btn" style="display:flex">
+                            <a href="#" class="ms_btn">Listen Now</a>
+                            <a href="#" class="ms_btn">Add To Queue</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        $('#imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UploadImageBaner',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="BanerImage"]').val(res.fileName);
+                    $('#imgageNewBaner').html('');
+                    let srcImage = res.fileName;
+                    let html = `
+                                 <img src="/images/banner/${srcImage}" alt="" class="img-fluid">
+                               `;
+                    $('#imgageNewBaner').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+        function UpdateBaner() {
+
+            console.log()
+            let obj = {
+                idBanner: $('#IdImageBaner').val(),
+                imageBanner: $('#BanerImage').val()
+            }
+            $.ajax({
+                url: "/Admin/Home/EditBanerItem",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+                    if (res > 0) {
+                        alert("Update thành công !");
+                        window.location.href = '/Admin/Home/EditBaner';
+                    }
+                },
+                error: function (error) {
+                    alert("Update mới thất bại...");
+                }
+            })
+        }
+    </script>
+}
