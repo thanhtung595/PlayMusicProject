@@ -307,30 +307,10 @@ namespace PlayMusicProject.Controllers
 
         public IActionResult Login()
         {
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    foreach (var cclams in User.Claims)
-            //    {
-            //        _UserNameCookis = cclams.Value;
-            //    }
-            //}
-            //var queryAcount = from us in _dbContext.UserEntity
-            //                  where us.AccountUser == _UserNameCookis
-            //                  select new User()
-            //                  {
-            //                      AccountUser = us.AccountUser,
-            //                      IsAdmin = us.IsAdmin
-            //                  };
-
-            //foreach (var us in queryAcount)
-            //{
-            //    if(us.AccountUser == _UserNameCookis && us.IsAdmin != true)
-            //    {
-            //        return Redirect("index");
-            //    }
-            //}
-
-
+            foreach (var cookie in HttpContext.Request.Cookies)
+            {
+                Response.Cookies.Delete(cookie.Key);
+            }
             return View();
         }
 

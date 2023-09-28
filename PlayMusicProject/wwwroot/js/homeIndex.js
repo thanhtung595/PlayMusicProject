@@ -133,8 +133,8 @@ $.ajax({
                         <div class="ms_rcnt_box_text">
                             <h3><a href="#">${artists.nameArtists}</a></h3>
                         </div>
+                        </div>
                     </div>
-                </div>
                 `;
                 $('.get-Featured_Artists').append(html);
             }
