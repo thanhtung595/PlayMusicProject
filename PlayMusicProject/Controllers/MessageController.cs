@@ -94,6 +94,14 @@ namespace PlayMusicProject.Controllers
                     };
                     _dbContext.MyFriendUserEntity.Add(add);
                     _dbContext.SaveChanges();
+                    var add2 = new pmoMyFriendUserEntity
+                    {
+                        IdUserSend = id,
+                        IdUserReceive = idUserChat,
+                        IsMyFriendUser = false
+                    };
+                    _dbContext.MyFriendUserEntity.Add(add2);
+                    _dbContext.SaveChanges();
                 }
             }
 
@@ -110,7 +118,8 @@ namespace PlayMusicProject.Controllers
                                };
             listUsers = showMyFriend.ToList();
             var people = from u in _dbContext.UserEntity
-                             where (string.IsNullOrEmpty(searchSDTUser) || u.SDTUser.ToString().ToLower() == (searchSDTUser.ToLower()))
+                             where (string.IsNullOrEmpty(searchSDTUser) || u.SDTUser.ToString().ToLower().Contains(searchSDTUser.ToLower())
+                             || u.UserName.ToLower().Contains(searchSDTUser.ToString().ToLower()))
                              && u.SDTUser.ToString().ToLower() != (sdtUserChat.ToString())
                              select new User()
                              {
@@ -150,6 +159,11 @@ namespace PlayMusicProject.Controllers
                                     IsMyFriendUser = usr.IsMyFriendUser
                                 };
             checkFormart = formartPeople.ToList();
+
+            if(listUsers.Count == 0)
+            {
+                ViewBag.NullsearchUser = "Không tìm thấy người cần tìm...";
+            }
 
             var vm = new PlayMusicProjectMode
             {

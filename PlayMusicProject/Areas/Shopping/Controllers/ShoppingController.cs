@@ -338,7 +338,7 @@ namespace PlayMusicProject.Areas.Shopping.Controllers
             _dbContext.AddCartEntity.Update(entity);
 			var status = _dbContext.SaveChanges();
 			return Ok(status);
-        }
+		}
 
 		[Authorize]
 		[Area("Shopping")]

@@ -2,8 +2,15 @@
     Layout = "_LayoutMessage";
 }
 @model PlayMusicProjectMode
+
 <title>MessageHome</title>
+
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/css/prefabwc.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<script src="~/js/prefabwc.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <div class="container">
     <div class="row clearfix">
         <div class="col-lg-12">
@@ -14,8 +21,9 @@
                             <div class="input-group-prepend">
                                 <button type="button" class="input-group-text" onclick="clickSearchBtn()"><i class="fa fa-search"></i></button>
                             </div>
-                            <input name="searchSDTUser" type="text" class="form-control" placeholder="Search...">
+                            <input name="searchSDTUser" type="text" class="form-control" placeholder="Search SDT Or Name">
                         </div>
+                        <p style="margin:45px">@ViewBag.NullsearchUser</p>
                         <ul class="list-unstyled chat-list mt-2 mb-0">
                             @{
                                 int countList = 0;
@@ -58,8 +66,19 @@
                         </ul>
                     </div>
                 </form>
-
                 <div class="chat">
+                    @if (Model.MessageBoxIdUserReceive.Count == 0)
+                    {
+                        <ul class="fly-in-text hidden">
+                            <li>M</li>
+                            <li>E</li>
+                            <li>S</li>
+                            <li>S</li>
+                            <li>A</li>
+                            <li>G</li>
+                            <li>E</li>
+                        </ul>
+                    }
                     <div class="chat-header clearfix">
                         <div class="row">
                             @{
@@ -125,6 +144,11 @@
 </div>
 @section ScriptsMessage{
     <script>
+        $(function () {
+            setTimeout(function () {
+                $('.fly-in-text').removeClass('hidden');
+            }, 500);
+        })();
         function clickSearchBtn() {
             //$("input[name='categoryIdItem']").val(0);
             //$("input[name='idBrands']").val(0);
@@ -161,7 +185,7 @@
         }
         let idSeverrd = document.getElementById("IdUserReceive").value;
         let textImageUserReceive = document.getElementById("textImageUserReceive").value;
-        
+
         setInterval(function () {
             $.ajax({
                 url: "/Message/GetListChatMessage",
@@ -203,9 +227,7 @@
                     console.log("Loi");
                 }
             })
-
-
-        }, 2000);
+        }, 1000);
 
     </script>
 }

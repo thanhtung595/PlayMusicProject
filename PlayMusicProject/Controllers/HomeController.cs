@@ -41,7 +41,7 @@ namespace PlayMusicProject.Controllers
             }
             if (id == 0)
             {
-                id = 1;
+                id = 0;
             }
             var musicList = from music in _dbContext.MusicEntity
                         join cate in _dbContext.CateGoryEntity
@@ -330,7 +330,7 @@ namespace PlayMusicProject.Controllers
                             IsBan = us.IsBan
                         };
 
-            var user = query.FirstOrDefault(x => x.AccountUser == useInfo.AccountUser
+            var user = query.FirstOrDefault(x => (x.AccountUser == useInfo.AccountUser)
             && x.AccountPass == useInfo.AccountPass);
             if (user == null)
             {
@@ -419,6 +419,7 @@ namespace PlayMusicProject.Controllers
                 AccountPass = user.AccountPass,
                 IsAdmin = false,
                 IsBan = false,
+                SDTUser = user.SDTUser,
                 UserImage = "imageUserdefaul.png",
                 TimeCreate = DateTime.Now
             };
@@ -451,6 +452,7 @@ namespace PlayMusicProject.Controllers
                                      AccountPass = us.AccountPass,
                                      UserImage = us.UserImage,
                                      IsAdmin = us.IsAdmin,
+                                     SDTUser = us.SDTUser,
                                  };
                 foreach (var us in AcountUser)
                 {
@@ -460,6 +462,7 @@ namespace PlayMusicProject.Controllers
                     TempData["AccountPass"] = us.AccountPass;
                     TempData["UserImage"] = us.UserImage;
                     TempData["CheckAdmin"] = us.IsAdmin;
+                    TempData["PhoneNumber"] = us.SDTUser;
                 }
             }
 
@@ -474,6 +477,7 @@ namespace PlayMusicProject.Controllers
                            UserImage = us.UserImage,
                            IsAdmin = us.IsAdmin,
                            IsBan = us.IsBan,
+                           SDTUser = us.SDTUser
                        };
 
             List<User> users = user.ToList();
