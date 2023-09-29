@@ -515,7 +515,6 @@ namespace PlayMusicProject.Controllers
             return Ok(status);
         }
 
-
         [HttpPost]
         public IActionResult EditImageProFile(IFormFile imageUpload)
         {
