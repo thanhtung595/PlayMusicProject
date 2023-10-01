@@ -360,5 +360,149 @@ namespace PlayMusicProject.Areas.Shopping.Controllers
             return Redirect("/Shopping/AdminEditProduct/CardAddProduct");
         }
 
-    }
+        [Authorize]
+        [Area("Shopping")]
+        public IActionResult Pay()
+		{
+            int idUserCart = 0;
+            if (User.Identity.IsAuthenticated)
+            {
+                foreach (var cclams in User.Claims)
+                {
+                    _UserNameCookis = cclams.Value;
+                }
+            }
+
+            if (_UserNameCookis != null)
+            {
+                var AcountUser = from us in _dbContext.UserEntity
+                                 where us.AccountUser == _UserNameCookis
+                                 select new User()
+                                 {
+                                     IdUser = us.IdUser,
+                                     UserName = us.UserName,
+                                     AccountUser = us.AccountUser,
+                                     AccountPass = us.AccountPass,
+                                     UserImage = us.UserImage,
+                                     IsAdmin = us.IsAdmin,
+                                 };
+                foreach (var us in AcountUser)
+                {
+                    idUserCart = us.IdUser;
+                    TempData["IdUser"] = us.IdUser;
+                    TempData["UserName"] = us.UserName;
+                    TempData["AccountUser"] = us.AccountUser;
+                    TempData["AccountPass"] = us.AccountPass;
+                    TempData["UserImage"] = us.UserImage;
+                    TempData["CheckAdmin"] = us.IsAdmin;
+                }
+            }
+
+			var pay = from p in _dbContext.PayEntity
+					  where p.IdUser == idUserCart
+					  select new Pay()
+					  {
+						  IdPay = p.IdPay,
+						  IdUser = p.IdUser,
+						  IdProductString = p.IdProductString,
+						  CountProductString = p.CountProductString,
+						  CountCart = p.CountCart,
+						  TotalPay = p.TotalPay,
+						  ActionPay = p.ActionPay,
+					  };
+			var vm = new PlayMusicProjectMode
+			{
+				Pay = pay.ToList(),
+			};
+            return View(vm);
+		}
+
+		[Authorize]
+		[Area("Shopping")]
+		public IActionResult AddPay()
+		{
+			int idUserCart = 0;
+			int countProduct = 0;
+			decimal sumPriceProduct = 0;
+			string IdProductString = "";
+			string CountProductString = "";
+			if (User.Identity.IsAuthenticated)
+			{
+				foreach (var cclams in User.Claims)
+				{
+					_UserNameCookis = cclams.Value;
+				}
+			}
+
+			if (_UserNameCookis != null)
+			{
+				var AcountUser = from us in _dbContext.UserEntity
+								 where us.AccountUser == _UserNameCookis
+								 select new User()
+								 {
+									 IdUser = us.IdUser,
+									 UserName = us.UserName,
+									 AccountUser = us.AccountUser,
+									 AccountPass = us.AccountPass,
+									 UserImage = us.UserImage,
+									 IsAdmin = us.IsAdmin,
+								 };
+				foreach (var us in AcountUser)
+				{
+					idUserCart = us.IdUser;
+					TempData["IdUser"] = us.IdUser;
+					TempData["UserName"] = us.UserName;
+					TempData["AccountUser"] = us.AccountUser;
+					TempData["AccountPass"] = us.AccountPass;
+					TempData["UserImage"] = us.UserImage;
+					TempData["CheckAdmin"] = us.IsAdmin;
+				}
+			}
+
+			var cardUser = from c in _dbContext.AddCartEntity
+						   where c.IdUser == idUserCart
+						   select new AddCart()
+						   {
+							   IdAddCart = c.IdUser,
+							   IdUser = idUserCart,
+							   IdProductShop = c.IdProductShop,
+							   CountAddCart = c.CountAddCart,
+							   NameProductShop = c.NameProductShop,
+							   SumPrice = c.SumPrice,
+							   ImageProductShop = c.ImageProductShop,
+						   };
+			foreach (var item in cardUser.ToList())
+			{
+				countProduct += item.CountAddCart;
+				IdProductString = IdProductString+" "+ item.IdProductShop.ToString();
+				CountProductString = CountProductString + " "+ item.CountAddCart.ToString();
+				sumPriceProduct += item.SumPrice;
+			}
+
+			var newPay = new pmoPayEntity
+			{
+				IdUser = idUserCart,
+				CountCart = countProduct,
+				TotalPay = sumPriceProduct,
+				IdProductString = IdProductString,
+				CountProductString = CountProductString,
+				ActionPay = 0,
+			};
+
+			_dbContext.PayEntity.Add(newPay);
+			_dbContext.SaveChanges();
+
+			return Redirect("/Shopping/Shopping/Pay");
+		}
+
+		[Area("Shopping")]
+		public IActionResult DeleteBillUser(int id)
+		{
+			var del = _dbContext.PayEntity.Find(id);
+			_dbContext.PayEntity.Remove(del);
+			_dbContext.SaveChanges();
+			return Redirect("/Shopping/Shopping/Pay");
+		}
+
+	}
 }

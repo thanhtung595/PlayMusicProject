@@ -1,0 +1,98 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+	Layout = "_LayoutShopProduct";
+}
+<style>
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+</style>
+<title>Shopping</title>
+<form role="form" method="POST" action="/Shopping/Shopping/EditCartAdd">
+	<section id="cart_items">
+		<div class="container">
+			<div class="breadcrumbs">
+				<ol class="breadcrumb">
+					<li><a href="/Shopping/Shopping/ProductShop">Home</a></li>
+					<li class="active">Shopping Cart</li>
+				</ol>
+			</div>
+			<div class="table-responsive cart_info">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">#STT</th>
+							<th scope="col">Product or Count</th>
+							<th scope="col">SumCount</th>
+							<th scope="col">TotalPay</th>
+							<th scope="col">ActionPay</th>
+							<th scope="col">Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+							@{
+								int stt = 1;
+								int countId = 0;
+								foreach (var item in Model.Pay)
+								{
+									string IdProductString = @item.IdProductString;
+									string CountProductString = @item.CountProductString;
+									string[] IdString = IdProductString.Split(" ");
+									string[] CountString = CountProductString.Split(" ");
+									<tr>
+										<th scope="row">@stt</th>
+										<td>
+											<select class="custom-select">
+												@foreach (var id in IdString)
+												{
+													<option value="1">IdProduct: @id --- Count: @CountString[countId]</option>
+													countId++;
+												}
+											</select>
+										</td>
+										<td>@item.CountCart</td>
+										<td>@item.TotalPay$</td>
+										@if (item.ActionPay == 0)
+										{
+											<td>Đợi duyệt</td>
+										}
+										else if (item.ActionPay == 1)
+										{
+											<td>Đang giao</td>
+										}
+										else if (item.ActionPay == 2)
+										{
+											<td>Đã nhận hàng</td>
+										}
+										<td>
+											<button type="button" onclick="deleteBill(@item.IdPay)" class="btn btn-danger">Hủy</button>
+										</td>
+									</tr>
+									stt++;
+									countId = 0;
+								}
+							}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+</form>
+@section ShopProductScrips
+{
+	<script>
+		function deleteBill(id) {
+			var check = confirm("Bạn có chắc muốn hủy đơn này không ???");
+			if (check) {
+				window.location.href = '/Shopping/Shopping/DeleteBillUser?id=' + id;
+			}
+		}
+	</script>
+}

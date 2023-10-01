@@ -18,7 +18,8 @@
         public List<ProductShop> ProductShop { get; set; }
         public List<AddCart> AddCart { get; set; }
         public List<Banner> Banner { get; set; }
-        public int TotalCount { get; set; }
+        public List<Pay> Pay { get; set; }
+		public int TotalCount { get; set; }
         public int PageSize { get; set; }
         public int PageNumber { get; set; }
         public int PageCount { get; set; }

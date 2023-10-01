@@ -19,5 +19,6 @@ namespace PlayMusicProject.EntityData
         public DbSet<pmoBannerEntity> BannerEntity { get; set; }
         public DbSet<pmoMyFriendUserEntity> MyFriendUserEntity { get; set; }
         public DbSet<pmoMessageEntity> MessageEntity { get; set; }
+        public DbSet<pmoPayEntity> PayEntity { get; set; }
     }
 }

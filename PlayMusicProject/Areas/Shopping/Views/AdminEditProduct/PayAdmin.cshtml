@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "_LayoutShopEditProduct";
+}
+@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+<title>CardAddProduct</title>
+<form action="/AdminEditProduct/CardAddProduct" method="Get" id="submitForm">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Add Card Table</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    #STT
+                                </th>
+                                <th>
+                                    IdUser
+                                </th>
+                                <th>
+                                    Product or Count
+                                </th>
+                                <th>
+                                    SumCount
+                                </th>
+                                <th>
+                                    TotalPay
+                                </th>
+                                <th>
+                                    ActionPay
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                                <th>
+                                    Delete
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int stt = 1;
+                                int countId = 0;
+                                foreach (var item in Model.Pay)
+                                {
+                                    string IdProductString = @item.IdProductString;
+                                    string CountProductString = @item.CountProductString;
+                                    string[] IdString = IdProductString.Split(" ");
+                                    string[] CountString = CountProductString.Split(" ");
+                                    <tr>
+                                        <th scope="row">@stt</th>
+                                        <td>@item.IdUser</td>
+                                        <td>
+                                            <select class="custom-select">
+                                                @foreach (var id in IdString)
+                                                {
+                                                    <option value="1">IdProduct: @id ------- Count: @CountString[countId]</option>
+                                                    countId++;
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>@item.CountCart</td>
+                                        <td>@item.TotalPay$</td>
+                                        @if (item.ActionPay == 0)
+                                        {
+                                            <td>Đợi duyệt</td>
+                                        }
+                                        else if (item.ActionPay == 1)
+                                        {
+                                            <td>Đang giao</td>
+                                        }
+                                        else if (item.ActionPay == 2)
+                                        {
+                                            <td>Đã nhận hàng</td>
+                                        }
+                                        <td>
+                                            <a href="/Shopping/AdminEditProduct/CheckBillAdmin?id=@item.IdPay" class="btn btn-success">Check</a>
+                                        </td>
+                                        <td>
+                                            <button type="button" onclick="deleteBill(@item.IdPay)" class="btn btn-danger">Hủy</button>
+                                        </td>
+                                    </tr>
+                                    stt++;
+                                    countId = 0;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<input type="number" name="pageNumber" value="@Model.PageNumber" hidden="hidden" />*@
+</form>
+<!-- content-wrapper ends -->
+@section AdminEditProductScrips
+    {
+    <script>
+        function deleteBill(id) {
+            var check = confirm("Bạn có chắc muốn hủy đơn này không ???");
+            if (check) {
+                window.location.href = '/Shopping/AdminEditProduct/DeleteBillAdmin?id=' + id;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,104 @@
+﻿@using PlayMusicProject.Models;
+@model PlayMusicProjectMode
+@{
+    Layout = "_LayoutShopEditProduct";
+}
+<title>Bill</title>
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-body">
+            <form method="POST" action="/Shopping/AdminEditProduct/CheckBillAdmin">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IdPay</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="idPay" class="form-control" readonly value="@Model.Pay[0].IdPay" placeholder="NameMusic">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IdUser</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" readonly value="@Model.Pay[0].IdUser" placeholder="DescribeMusic">
+                    </div>
+                </div> <!-- form-group // -->
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">IdProduct Or CountProduct</label>
+                    <div class="col-sm-9">
+                        @{
+                            int stt = 1;
+                            int countId = 0;
+                            foreach (var item in Model.Pay)
+                            {
+                                string IdProductString = @Model.Pay[0].IdProductString;
+                                string CountProductString = @Model.Pay[0].CountProductString;
+                                string[] IdString = IdProductString.Split(" ");
+                                string[] CountString = CountProductString.Split(" ");
+                                <select class="custom-select">
+                                    @foreach (var id in IdString)
+                                    {
+                                        <option value="1">IdProduct: @id ------- Count: @CountString[countId]</option>
+                                        countId++;
+                                    }
+                                </select>
+                                stt++;
+                                countId = 0;
+                            }
+                        }
+                    </div>
+                </div> <!-- form-group // -->
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">CountCart</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" readonly value="@Model.Pay[0].CountCart" placeholder="DescribeMusic">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">TotalPay</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" readonly value="@Model.Pay[0].TotalPay" placeholder="DescribeMusic">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="IdLyricMusic">ActionPay</label>
+                    <select class="form-control" name="ActionPay">
+                        <option value="0">Lựa chọn</option>
+                        @if (Model.Pay[0].ActionPay == 0)
+                        {
+                            @if (Model.Pay[0].ActionPay == 0)
+                            {
+                                <option selected value="0">Đợi duyệt</option>
+                            }
+                                <option value="1">Đang giao</option>
+                                <option value="2">Đã nhận hàng</option>
+                        }
+                        else if (Model.Pay[0].ActionPay == 1)
+                        {
+                            @if (Model.Pay[0].ActionPay == 1)
+                            {
+                                <option selected value="1">Đang giao</option>
+                            }
+                                <option value="0">Đợi duyệt</option>
+                                <option value="2">Đã nhận hàng</option>
+                        }
+                        else if (Model.Pay[0].ActionPay == 2)
+                        {
+                            @if (Model.Pay[0].ActionPay == 1)
+                            {
+                                <option selected value="1">Đã nhận hàng</option>
+                            }
+                                <option value="0">Đợi duyệt</option>
+                                <option value="2">Đang giao</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-primary">Sumbit</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+
+</div> <!-- container// -->
