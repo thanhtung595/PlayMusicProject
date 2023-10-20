@@ -1,0 +1,72 @@
+﻿
+<div class="fixDialogLogin" style="height:800px">
+    <form role="form" method="POST" action="/Home/RegisterOTP">
+        <div class="modal-dialog login_dialog">
+            <div class="modal-content">
+                <a href="/Home/index">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa_icon form_close"></i>
+                    </button>
+                </a>
+                <div class="modal-body">
+                    <div class="ms_register_img">
+                        <img src="~/images/register_img.png" alt="" class="img-fluid" />
+                    </div>
+                    <div class="ms_register_form">
+                        <h2>Register / RegisterOTP</h2>
+                        <div class="form-group">
+                            <input type="text" id="AccountUser" value="@ViewBag.toEmailShow" readonly placeholder="Enter Your Email Or UserName" class="form-control">
+                            <span class="form_icon">
+                                <i class="fa_icon form-envelope" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="OTPSend" placeholder="Mã OTP" class="form-control">
+                            <span class="form_icon">
+                                <i class="fa_icon form-lock" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="remember_checkbox">
+                            <div style="text-align:center;margin:20px">
+                                <button style="display: contents" type="button" class="ms_btn" onclick="DangKy()" target="_blank">Xác thực OTP</button>
+                            </div>
+                        </div>
+                        <p>Don't Have An Account? <a href="/Home/Register_Here" class="ms_modal1 hideCurrentModel">register</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script>
+        function DangKy(){
+            let obj = {
+                AccountUser: $('#AccountUser').val(),
+                OTPSend: $('#OTPSend').val()
+            }
+            console.log(obj);
+            $.ajax({
+                url: "/Home/RegisterSubmit",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+
+                beforeSend: function () {
+                },
+                success: function (res) {
+                        console.log(res);
+                        console.log("Ok");
+                        window.location.href = '/Home/Login';
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Sai mã OTP...");
+                }
+
+            })
+        }
+    </script>
+}

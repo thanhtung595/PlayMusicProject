@@ -10,6 +10,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System;
+using System.Net.Mail;
+using System.Net;
+using System.Text.Json;
+using static System.Net.WebRequestMethods;
+using Humanizer;
 
 namespace PlayMusicProject.Controllers
 {
@@ -20,12 +25,14 @@ namespace PlayMusicProject.Controllers
         public string _UserNameCookis;
         public string nameMusic;
         private readonly IWebHostEnvironment _enviroment;
+        private readonly IHttpContextAccessor _accessor;
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, IWebHostEnvironment enviroment)
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, IWebHostEnvironment enviroment, IHttpContextAccessor accessor)
         {
             _logger = logger;
             _dbContext = dbContext;
             _enviroment = enviroment;
+            _accessor = accessor;
         }
 
         public IActionResult Index(int id, string nameMusicSearch)
@@ -412,23 +419,150 @@ namespace PlayMusicProject.Controllers
                 TempData["eresAcont"] = eresAcont;
                 return Redirect("/Home/Register_Here");
             }
-            var newUser = new pmoUserEntity()
+
+            // Người nhận email (địa chỉ email của người nhận OTP)
+            string toEmail = user.AccountUser;
+            var jsonString = HttpContext.Session.GetString(toEmail);
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                UserName = user.UserName,
-                AccountUser = user.AccountUser,
-                AccountPass = user.AccountPass,
-                IsAdmin = false,
-                IsBan = false,
-                SDTUser = user.SDTUser,
-                UserImage = "imageUserdefaul.png",
-                TimeCreate = DateTime.Now
-            };
-            _dbContext.UserEntity.Add(newUser);
-            _dbContext.SaveChanges();
-            string message = "Đăng ký thành công đăng nhập tại đây";
-            TempData["RegisterSuccess"] = message;
-            return Redirect("/Home/Login");
+                HttpContext.Session.Remove(toEmail);
+            }
+
+            string smtpServer = "smtp.gmail.com";
+            string smtpUsername = "nguyenthanhtung.06112003@gmail.com";
+            string smtpPassword = "geuubosbpboganmd";
+
+            //string toEmail = "nguyenthanhtung.vn.06112003@gmail.com";
+
+            // Tạo mã OTP ngẫu nhiên (có thể sử dụng thư viện mã OTP như Google Authenticator)
+            string otpCode = GenerateRandomOtp();
+
+            // Nội dung email chứa mã OTP
+            string emailSubject = "Play Music Online OTP";
+            string emailBody = $"Mã OTP của bạn là: {otpCode}";
+
+            try
+            {
+                // Tạo đối tượng SmtpClient để gửi email
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer))
+                {
+                    smtpClient.Port = 587;
+                    smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                    smtpClient.EnableSsl = true;
+                    // Tạo đối tượng MailMessage để xây dựng email
+                    using (MailMessage mailMessage = new MailMessage(smtpUsername, toEmail, emailSubject, emailBody))
+                    {
+                        // Gửi email
+                        smtpClient.Send(mailMessage);
+                        if (HttpContext.Session.GetString(user.AccountUser) == null)
+                        {
+                            var timeObj = new TimedObject
+                            {
+                                CreationTime = DateTime.UtcNow,
+                                Data = user,
+                                TimeToLive = TimeSpan.FromMinutes(5),
+                                OTPCODE = otpCode,
+                            };
+                            var session = JsonSerializer.Serialize(timeObj);
+                            _accessor.HttpContext.Session.SetString(user.AccountUser, session);
+
+                            var jsonString22 = HttpContext.Session.GetString(user.AccountUser);
+                            TempData["toEmail"] = toEmail;
+                            return Redirect("/Home/RegisterOTP");
+                        }
+                        return Ok("Không thể add vào session");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra lỗi: {ex.Message}");
+                return Ok($"Đã xảy ra lỗi: {ex.Message}");
+            }
         }
+
+        public IActionResult RegisterOTP (string accountUser, string otp)
+        {
+            ViewBag.toEmail = TempData["toEmail"];
+            string toE = ViewBag.toEmail;
+            var jsonString = HttpContext.Session.GetString(toE);
+            var users = JsonSerializer.Deserialize<TimedObject>(jsonString);
+            ViewBag.toEmailShow = users.Data.AccountUser;
+            //if (!string.IsNullOrEmpty(jsonString))
+            //{
+            //var users = JsonSerializer.Deserialize<TimedObject>(jsonString);
+            string otpCode = users.OTPCODE;
+            //if (otpCode == otp)
+            //{
+            //    var newUser = new pmoUserEntity()
+            //    {
+            //        UserName = users.Data.UserName,
+            //        AccountUser = users.Data.AccountUser,
+            //        AccountPass = users.Data.AccountPass,
+            //        IsAdmin = false,
+            //        IsBan = false,
+            //        SDTUser = users.Data.SDTUser,
+            //        UserImage = "imageUserdefaul.png",
+            //        TimeCreate = DateTime.Now
+            //    };
+            //    _dbContext.UserEntity.Add(newUser);
+            //    _dbContext.SaveChanges();
+            //    string message = "Đăng ký thành công đăng nhập tại đây";
+            //    TempData["RegisterSuccess"] = message;
+            //    return Redirect("/Home/Login");
+            //    //return Ok(user.Data);
+            //}
+            //else
+            //{
+            //    ViewBag.toEmail = "Sai mã OTP";
+            //    return Redirect("/Home/RegisterOTP");
+            //}
+            //}
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult RegisterSubmit([FromBody] User user)
+        {
+            string e = user.AccountUser;
+
+            var jsonString = HttpContext.Session.GetString(user.AccountUser);
+            if (!string.IsNullOrEmpty(jsonString))
+            {
+                var users = JsonSerializer.Deserialize<TimedObject>(jsonString);
+                string otpCode = users.OTPCODE;
+                if (otpCode == user.OTPSend)
+                {
+                    var newUser = new pmoUserEntity()
+                    {
+                        UserName = users.Data.UserName,
+                        AccountUser = users.Data.AccountUser,
+                        AccountPass = users.Data.AccountPass,
+                        IsAdmin = false,
+                        IsBan = false,
+                        SDTUser = users.Data.SDTUser,
+                        UserImage = "imageUserdefaul.png",
+                        TimeCreate = DateTime.Now
+                    };
+                    _dbContext.UserEntity.Add(newUser);
+                    _dbContext.SaveChanges();
+                    string message = "Đăng ký thành công đăng nhập tại đây";
+                    TempData["RegisterSuccess"] = message;
+                    return Ok(1);
+                    //return Ok(user.Data);
+                }
+                else
+                {
+                    ViewBag.toEmail = "Sai mã OTP";
+                    return BadRequest();
+                }
+            }
+            return BadRequest();
+        }
+
 
         public IActionResult ProFile()
         {
@@ -545,6 +679,22 @@ namespace PlayMusicProject.Controllers
             public string Status { get; set; }
             public string Message { get; set; }
         }
+
+        public class TimedObject
+        {
+            public DateTime CreationTime { get; set; }
+            public User Data { get; set; }
+
+            public TimeSpan TimeToLive { get; set; }
+
+            public string OTPCODE { get; set; }
+        }
+        static string GenerateRandomOtp()
+        {
+            Random random = new Random();
+            return random.Next(10000, 99999).ToString();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

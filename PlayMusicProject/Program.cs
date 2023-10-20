@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PlayMusicProject.EntityData;
 using System;
@@ -7,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(1);
+});
+
 
 //Builder DbContext
 var connectString = builder.Configuration.GetConnectionString("Default");
@@ -33,6 +43,7 @@ app.UseRouting();
 // 2. Authentication
 app.UseAuthentication();
 
+app.UseSession(); // Kích hoạt session
 app.UseAuthorization();
 
 app.MapControllerRoute(

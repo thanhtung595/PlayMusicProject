@@ -25,5 +25,6 @@
         public bool IsMyFriendUser { get; set; }
         public int IdMyFriendUser { get; set; }
         public int IdUserReceive { get; set; }
+        public string OTPSend { get; set; }
     }
 }
